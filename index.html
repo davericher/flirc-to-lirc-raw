@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>FLIRC to LIRC Raw</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.5/lodash.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+            <h1>FLIRC to LIRC Raw</h1>
+            <div class="form">
+                <div class="form-group">
+                    <label for="name">Key Name</label>
+                    <input type="text" class="form-control" id="name" aria-describedby="nameHelp" placeholder="KEY_POWER">
+                    <small id="nameHelp" class="form-text text-muted">The key name.</small>
+                </div>
+                <div class="form-group">
+                    <label for="input">Input</label>
+                    <textarea class="form-control" name="input" id="input" rows="4"></textarea>
+                </div>
+                <hr>
+                <div class="form-group">
+                    <label for="output">Output</label>
+                    <textarea class="form-control" name="output" id="output" rows="10" readonly></textarea>                    
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" name="submit" id="submit">Submit</button>
+                    <button class="btn btn-info" name="copy" id="copy">Copy</button>
+                    <button class="btn btn-clear" name="clear" id="copy">Clear</button>
+                </div>
+            </div>
+    </div>
+    <script>
+        // Elements
+        const output = document.getElementById('output');
+        const input = document.getElementById('input');
+        const submit = document.getElementById('submit');
+        const name = document.getElementById('name');
+        const copy =  document.getElementById('copy');
+        const clear = document.getElementById('clear');
+
+        // Handle Button Click
+        submit.addEventListener('click', e => {
+            const valueArr = input.value.split(',');
+            valueArr.shift();
+            const chunks = _.chunk(valueArr, 6);
+            const outputString = _.map(chunks, chunk => `        ${chunk.join(' ')}\n`).join('');
+            output.value = `    name ${name.value}\n${outputString}`;
+        });
+        // Copy Button
+        copy.addEventListener('click', e=> {
+            output.select();
+            document.execCommand("Copy");
+        });
+        // Click Button
+        clear.addEventListener('click', e=> {
+            name.value = '';
+            input.value = '';
+            output.value = '';
+        });
+    </script>   
+</body>
+</html>
